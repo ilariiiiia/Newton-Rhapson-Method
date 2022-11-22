@@ -65,7 +65,7 @@ def drawgrid(screen: pygame.display, gridsize: int = 10) -> None:
 
 def drawfunction(screen: pygame.display, f: object, gridsize:int) -> None:
     size = screen.get_size()
-    for px in range(1, size[0]):
+    for px in range(0, size[0]-1):
         # costanti
         # metà dimensioni y
         hy = size[1] / 2
@@ -75,10 +75,15 @@ def drawfunction(screen: pygame.display, f: object, gridsize:int) -> None:
         x -= gridsize / 2
         y = f(x) * size[1]/gridsize
         y += hy
+        x2 = (px + 1) / size[0]
+        x2 *= gridsize
+        x2 -= gridsize / 2
+        y2 = f(x2) * size[1] / gridsize
+        y2 += hy
 
-        pygame.draw.circle(
+        pygame.draw.line(
             screen,
             (255, 255, 255),
             (px, y),
-            radius=1
+            (px+1, y2)
         )
