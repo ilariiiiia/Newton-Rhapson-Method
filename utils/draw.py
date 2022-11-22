@@ -1,17 +1,16 @@
 import pygame
 
 
-def drawgrid(screen: pygame.display, gridsize:int = 10) -> None:
-
+def drawgrid(screen: pygame.display, gridsize: int = 10) -> None:
     size = screen.get_size()
 
-    hx = int(size[0]/2)
-    hy = int(size[1]/2)
+    hx = int(size[0] / 2)
+    hy = int(size[1] / 2)
 
     passed = False
 
     # linee verticali
-    for x in range(hx, size[0], int((size[0]-hx)/gridsize)):
+    for x in range(hx, size[0], int((size[0] - hx) / gridsize)):
 
         if not passed:
             w = 3
@@ -26,7 +25,7 @@ def drawgrid(screen: pygame.display, gridsize:int = 10) -> None:
             (x, size[1]),
             width=w
         )
-    for x in range(hx, 0, int((hx-size[0])/gridsize)):
+    for x in range(hx, 0, int((hx - size[0]) / gridsize)):
         pygame.draw.line(
             screen,
             (125, 125, 125),
@@ -38,7 +37,7 @@ def drawgrid(screen: pygame.display, gridsize:int = 10) -> None:
     passed = False
 
     # linee orizzontali
-    for y in range(hy, size[1], int((size[1]-hy)/gridsize)):
+    for y in range(hy, size[1], int((size[1] - hy) / gridsize)):
 
         if not passed:
             w = 3
@@ -54,11 +53,32 @@ def drawgrid(screen: pygame.display, gridsize:int = 10) -> None:
             width=w
         )
 
-    for y in range(hy, 0, int((hy-size[1])/gridsize)):
+    for y in range(hy, 0, int((hy - size[1]) / gridsize)):
         pygame.draw.line(
             screen,
             (125, 125, 125),
             (0, y),
             (size[0], y),
             width=1
+        )
+
+
+def drawfunction(screen: pygame.display, f: object, gridsize:int) -> None:
+    size = screen.get_size()
+    for px in range(1, size[0]):
+        # costanti
+        # metà dimensioni y
+        hy = size[1] / 2
+        # x è il numero delle ordinate. px è la rappresentazione di quel numero sullo schermo
+        x = px / size[0]
+        x *= gridsize
+        x -= gridsize / 2
+        y = f(x) * size[1]/gridsize
+        y += hy
+
+        pygame.draw.circle(
+            screen,
+            (255, 255, 255),
+            (px, y),
+            radius=1
         )
