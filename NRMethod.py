@@ -28,7 +28,7 @@ def NRMethod(f: object, g: float = 0.0) -> float:
         try:
             return -(y0 / m) + x0
         except ZeroDivisionError:
-            return x0+0.05
+            return x0+0.5
     n = 15  # numero di iterazioni
     for _ in range(n):
         g = zerodi(f, g)

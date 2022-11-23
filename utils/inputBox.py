@@ -12,10 +12,12 @@ class InputBox:
         self.rect = pg.Rect(x, y, w, h)
         self.color = COLOR_INACTIVE
         self.text = text
+        self.oldtext = ''
         self.txt_surface = FONT.render(text, True, self.color)
         self.active = False
 
     def handle_event(self, event):
+        self.oldtext = ''
         if event.type == pg.MOUSEBUTTONDOWN:
             # If the user clicked on the input_box rect.
             if self.rect.collidepoint(event.pos):
@@ -28,14 +30,15 @@ class InputBox:
         if event.type == pg.KEYDOWN:
             if self.active:
                 if event.key == pg.K_RETURN:
-                    print(self.text)
-                    self.text = ''
+                    self.oldtext = self.text[5:]
+                    self.text = 'f(x)='
                 elif event.key == pg.K_BACKSPACE:
                     self.text = self.text[:-1]
                 else:
                     self.text += event.unicode
                 # Re-render the text.
                 self.txt_surface = FONT.render(self.text, True, self.color)
+        return self.oldtext
 
     def update(self):
         # Resize the box if the text is too long.

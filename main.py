@@ -1,19 +1,16 @@
 # libreria per la GUI
-import math
+from math import *
 import pygame
 from NRMethod import NRMethod
 from utils.draw import drawgrid, drawfunction
 from utils.inputBox import InputBox
 
 # costanti matematiche
-e = math.e
-ln = lambda x: math.log(x, e)
-log = lambda b, x: math.log(x, b)
-sqrt = math.sqrt
+ln = lambda x: log(x, e)
 
 # definisco la funzione
-testof = "x^5-3x-2"
-f = lambda x: x ** 3 - 1.3 * x - 2 * sqrt(abs(x))
+testof = "x**3"
+f = lambda x: eval(testof)
 zero = NRMethod(f, 3)
 
 # GUI
@@ -33,7 +30,11 @@ while True:
 
     # raccogli eventi. Non serve a molto per ora
     for event in pygame.event.get():
-        inputbox.handle_event(event)
+        res = inputbox.handle_event(event)
+        if res:
+            testof = res
+            f = lambda x: eval(testof)
+            zero = NRMethod(f, 3)
         if event.type == pygame.QUIT:
             pygame.quit()
         elif event.type == pygame.KEYDOWN:
