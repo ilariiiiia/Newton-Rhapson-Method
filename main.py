@@ -26,6 +26,8 @@ font = pygame.font.SysFont("Comic Sans MS", 18)
 inputbox = InputBox(5, 75, 200, 35, text="f(x)=")
 
 gridsize = 4
+deltax = 0
+deltay = 0
 
 while True:
 
@@ -36,11 +38,18 @@ while True:
             pygame.quit()
         elif event.type == pygame.KEYDOWN:
             if not inputbox.active:
-                # ingrandisci o rimpiccolisci la griglia
-                if event.key == pygame.key.key_code("E"):
+                if event.key == pygame.key.key_code("E"): # rimpicciolisci
                     gridsize = gridsize-1 if gridsize > 1 else gridsize
-                elif event.key == pygame.key.key_code("Q"):
+                elif event.key == pygame.key.key_code("Q"): # ingrandisci
                     gridsize += 1
+                if event.key == pygame.key.key_code("A"): # destra
+                    deltax += gridsize * 4
+                elif event.key == pygame.key.key_code("D"): # sinistra
+                    deltax -= gridsize * 4
+                if event.key == pygame.key.key_code("W"): # su
+                    deltay += gridsize * 4
+                elif event.key == pygame.key.key_code("S"):# giu'
+                    deltay -= gridsize * 4
 
     inputbox.update()
 
@@ -50,18 +59,26 @@ while True:
     inputbox.draw(screen)
 
     # disegna la griglia
-    drawgrid(screen, gridsize)
+    drawgrid(screen, gridsize, deltax, deltay)
     size = screen.get_size()
     dx = int(size[0] / gridsize)
     dy = dx
 
     # metti i punti nel grafico
-    drawfunction(screen, f, gridsize)
+    drawfunction(screen, f, gridsize, deltax, deltay)
 
     # disegno lo 0 della funzione
     x = zero * size[0] / gridsize + size[0] / 2
+    x += deltax
     y = f(zero) * dy
     y += size[1]/2
+    y += deltay
+    pygame.draw.circle(
+        screen,
+        (0, 0, 255),
+        (x, y),
+        radius=3
+    )
 
     # testo dello 0 della funzione
     testo = font.render(f"zero in {zero:3f}", True, (120, 120, 255))
@@ -74,14 +91,6 @@ while True:
     # altri testi
     testo = font.render(f"dimensioni griglia={gridsize}", True, (120, 120, 255))
     screen.blit(testo, (5, 50))
-
-
-    pygame.draw.circle(
-        screen,
-        (0, 0, 255),
-        (x, y),
-        radius=3
-    )
 
     pygame.display.flip()
 
