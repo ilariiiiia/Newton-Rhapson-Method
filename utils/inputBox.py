@@ -8,13 +8,15 @@ FONT = pg.font.SysFont("Comic Sans MS", 18)
 
 class InputBox:
 
-    def __init__(self, x, y, w, h, text=''):
+    def __init__(self, x, y, w, h, text='', div=5):
         self.rect = pg.Rect(x, y, w, h)
         self.color = COLOR_INACTIVE
         self.text = text
+        self.starttext = text
         self.oldtext = ''
         self.txt_surface = FONT.render(text, True, self.color)
         self.active = False
+        self.div = div
 
     def handle_event(self, event):
         self.oldtext = ''
@@ -30,8 +32,8 @@ class InputBox:
         if event.type == pg.KEYDOWN:
             if self.active:
                 if event.key == pg.K_RETURN:
-                    self.oldtext = self.text[5:]
-                    self.text = 'f(x)='
+                    self.oldtext = self.text[self.div:]
+                    self.text = self.starttext
                 elif event.key == pg.K_BACKSPACE:
                     self.text = self.text[:-1]
                 else:

@@ -1,18 +1,18 @@
 import pygame
 
 
-def drawgrid(screen: pygame.display, gridsize: int = 10, deltax:int=0, deltay:int=0) -> None:
+def drawgrid(screen: pygame.display, gridsize: int = 10, deltax: int = 0, deltay: int = 0) -> None:
     size = screen.get_size()
 
     hx = int(size[0] / 2)
     hy = int(size[1] / 2)
 
-    load = 2 # how many more lines to load
+    load = 2  # how many more lines to load
 
     passed = False
 
     # linee verticali
-    for x in range(hx + deltax, size[0]*load, int((size[0] - hx) / gridsize)):
+    for x in range(hx + deltax, size[0] * load, int((size[0] - hx) / gridsize)):
 
         if not passed:
             w = 3
@@ -27,7 +27,7 @@ def drawgrid(screen: pygame.display, gridsize: int = 10, deltax:int=0, deltay:in
             (x, size[1]),
             width=w
         )
-    for x in range(hx + deltax, -size[0]*load, int((hx - size[0]) / gridsize)):
+    for x in range(hx + deltax, -size[0] * load, int((hx - size[0]) / gridsize)):
         pygame.draw.line(
             screen,
             (125, 125, 125),
@@ -39,7 +39,7 @@ def drawgrid(screen: pygame.display, gridsize: int = 10, deltax:int=0, deltay:in
     passed = False
 
     # linee orizzontali
-    for y in range(hy + deltay, size[1]*load, int((size[1] - hy) / gridsize)):
+    for y in range(hy + deltay, size[1] * load, int((size[1] - hy) / gridsize)):
 
         if not passed:
             w = 3
@@ -65,30 +65,82 @@ def drawgrid(screen: pygame.display, gridsize: int = 10, deltax:int=0, deltay:in
         )
 
 
-def drawfunction(screen: pygame.display, f: object, gridsize:int, deltax=0, deltay=0) -> None:
-    load = 2  # how many more lines to load
-    size = screen.get_size()
-    for px in range(-size[0]*load, size[0]*load):
-        # costanti
-        # metà dimensioni y
-        hy = size[1] / 2
-        # x è il numero delle ordinate. px è la rappresentazione di quel numero sullo schermo
-        x = px / size[0]
-        x *= gridsize
-        x -= gridsize / 2
-        y = f(x) * size[1]/gridsize
-        y += hy
-        y += deltay
-        x2 = (px + 1) / size[0]
-        x2 *= gridsize
-        x2 -= gridsize / 2
-        y2 = f(x2) * size[1] / gridsize
-        y2 += hy
-        y2 += deltay
+def renderpoint(screen: pygame.display,
+                point: (int, int),
+                gridsize: int,
+                deltax=0,
+                deltay=0,
+                color=(0, 0, 255),
+                radius=1):
+    """
+    Args:
+    screen - lo schermo
+    point - tuple di due int, x e y geometrici
+    gridsize
+    deltax - spostamento sulla x
+    deltay - spostamento sulla y
+    """
 
-        pygame.draw.line(
+    size = screen.get_size()
+    px = point[0] * size[0] / (gridsize * 2)
+    px += size[0] / 2
+    px += deltax
+    px = int(px)
+    py = -1 * point[1] * size[1] / (gridsize * 2)
+    py += size[1] / 2
+    py += deltay
+    py = int(py)
+
+    if px > size[0] or px < 0 or py > size[1] or py < 0:
+        return
+    pygame.draw.circle(
+        screen,
+        color,
+        (px, py),
+        radius
+    )
+
+
+def renderline(
+        screen: pygame.display,
+        point1: (int, int),
+        point2: (int, int),
+        gridsize: int,
+        deltax=0,
+        deltay=0,
+        color=(255, 255, 255)):
+    size = screen.get_size()
+    p = []
+    for point in (point1, point2):
+        px = point[0] * size[0] / (gridsize * 2)
+        px += size[0] / 2
+        px += deltax
+        px = int(px)
+        py = -1 * point[1] * size[1] / (gridsize * 2)
+        py += size[1] / 2
+        py += deltay
+        py = int(py)
+        p.append((px, py))
+    pygame.draw.line(
+        screen,
+        (255, 255, 255),
+        p[0],
+        p[1]
+    )
+
+
+def drawfunction(screen: pygame.display, f: object, gridsize: int, deltax=0, deltay=0) -> None:
+    size = screen.get_size()
+    dx = deltax / size[0] * gridsize
+    resolution = 0.1
+    n = 10
+    for x in range(int(-1 * (gridsize + dx) * n), int((gridsize + dx) * n), int(resolution * n)):
+        x /= n
+        renderline(
             screen,
-            (255, 255, 255),
-            (px+deltax, y),
-            (px+deltax+1, y2)
+            (x, f(x)),
+            (x + resolution, f(x + resolution)),
+            gridsize,
+            deltax,
+            deltay
         )
