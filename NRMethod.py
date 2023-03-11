@@ -16,6 +16,7 @@ def NRMethod(f: object, g: float = 0.0) -> float:
         # funzione per trovare la derivata di una funzione in un punto di essa
         def dydx(f):
             dx = 0.0005
+            # (f(x+h)-f(x)) / h. Definition of derivative
             return (f(g + dx) - f(g)) / dx
 
         m = dydx(f)
